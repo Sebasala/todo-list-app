@@ -2,13 +2,21 @@ import { NextResponse } from "next/server";
 import { todos } from "@/lib/data";
 import { Todo } from "@/types";
 import { sanitizeText } from "@/lib/utils";
+import { prisma } from "@/lib/prisma";
 
 /**
  * Retrieves all todo items.
  * @returns {Promise<NextResponse>} JSON response containing an array of all todos
  */
 export async function GET() {
-  return NextResponse.json(todos);
+  try {
+    const todos = await prisma.todo.findMany();
+    return NextResponse.json(todos);
+  } catch (error) {
+    console.error({ error });
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 /**
@@ -31,12 +39,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const newTodo: Todo = {
-      id: crypto.randomUUID(),
-      title: sanitizedText,
-      completed: false,
-      createdAt: new Date(),
-    };
+    const newTodo: Todo = await prisma.todo.create({
+      data: {
+        title: sanitizedText,
+      },
+    });
 
     todos.push(newTodo);
     return NextResponse.json(newTodo, { status: 201 });
@@ -45,5 +52,7 @@ export async function POST(request: Request) {
       { error: "Invalid request body" },
       { status: 400 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 }

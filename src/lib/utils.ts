@@ -7,13 +7,13 @@ import { Todo } from "@/types";
  * @param text - The input text to sanitize.
  * @returns The sanitized text or null if the input is invalid or empty.
  */
-export function sanitizeText(text: string): string | null {
+export function sanitizeText(text: string): string | undefined {
   if (typeof text !== "string") {
-    return null;
+    return undefined;
   }
   const trimmedText = text.trim();
   if (trimmedText.length === 0) {
-    return null;
+    return undefined;
   }
   const safeText = validator.escape(trimmedText);
   return safeText.slice(0, 200);

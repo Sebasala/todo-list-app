@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { todos } from "@/lib/data";
 import { SingleTodoContext } from "@/types";
-import { findTodoIndex, sanitizeText } from "@/lib/utils";
+import { sanitizeText } from "@/lib/utils";
+import { prisma } from "@/lib/prisma";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 /**
  * Updates an existing todo item by ID.
@@ -11,30 +12,35 @@ import { findTodoIndex, sanitizeText } from "@/lib/utils";
  */
 export async function PUT(request: NextRequest, { params }: SingleTodoContext) {
   const { id } = await params;
-  const todoIndex = findTodoIndex(id, todos);
-  if (todoIndex === -1) {
-    return NextResponse.json({ error: "Todo not found" }, { status: 404 });
-  }
 
-  const { completed, text }: { completed?: boolean; text?: string } =
+  const { completed, title }: { completed?: boolean; title?: string } =
     await request.json();
 
-  if (completed !== undefined) {
-    todos[todoIndex].completed = completed;
-  }
+  const isCompletedValid = completed !== undefined;
+  const isTitleValid = sanitizeText(title || "");
 
-  if (text !== undefined) {
-    const sanitizedText = sanitizeText(text);
-    if (!sanitizedText) {
-      return NextResponse.json(
-        { error: "Invalid text provided" },
-        { status: 400 }
-      );
+  try {
+    const updatedTodo = await prisma.todo.update({
+      where: {
+        id,
+      },
+      data: {
+        ...(isCompletedValid && { completed }),
+        ...(isTitleValid && { title: sanitizeText(title || "") }),
+      },
+    });
+    return NextResponse.json(updatedTodo);
+  } catch (error) {
+    if (
+      error instanceof PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      return NextResponse.json({ error: "Todo not found" }, { status: 404 });
     }
-    todos[todoIndex].title = sanitizedText;
+    throw error; // Re-throw other errors
+  } finally {
+    prisma.$disconnect();
   }
-
-  return NextResponse.json(todos[todoIndex]);
 }
 
 /**
@@ -48,10 +54,21 @@ export async function DELETE(
   { params }: SingleTodoContext
 ) {
   const { id } = await params;
-  const todoIndex = findTodoIndex(id, todos);
-  if (todoIndex === -1) {
-    return NextResponse.json({ error: "Todo not found" }, { status: 404 });
+
+  try {
+    const deletedTodo = await prisma.todo.delete({
+      where: { id },
+    });
+    return NextResponse.json(deletedTodo);
+  } catch (error) {
+    if (
+      error instanceof PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      return NextResponse.json({ error: "Todo not found" }, { status: 404 });
+    }
+    throw error; // Re-throw other errors
+  } finally {
+    prisma.$disconnect();
   }
-  const deletedTodo = todos.splice(todoIndex, 1);
-  return NextResponse.json(deletedTodo);
 }
