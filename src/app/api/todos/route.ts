@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { todos } from "@/lib/data";
 import { Todo } from "@/types";
 import { sanitizeText } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
@@ -45,7 +44,6 @@ export async function POST(request: Request) {
       },
     });
 
-    todos.push(newTodo);
     return NextResponse.json(newTodo, { status: 201 });
   } catch {
     return NextResponse.json(
