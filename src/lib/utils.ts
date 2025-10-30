@@ -28,3 +28,18 @@ export function sanitizeText(text: string): string | null {
 export function findTodoIndex(id: string, todosArray: Todo[]): number {
   return todosArray.findIndex((todo) => todo.id === id);
 }
+
+/**
+ * Array of navigation path objects used for routing in the application.
+ * Each object contains a display name and the corresponding path.
+ */
+export const pathNames = [
+  {
+    name: "Create",
+    path: "/",
+  },
+  {
+    name: "Dashboard",
+    path: "/dashboard",
+  },
+];

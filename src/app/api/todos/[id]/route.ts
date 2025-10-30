@@ -31,7 +31,7 @@ export async function PUT(request: NextRequest, { params }: SingleTodoContext) {
         { status: 400 }
       );
     }
-    todos[todoIndex].text = sanitizedText;
+    todos[todoIndex].title = sanitizedText;
   }
 
   return NextResponse.json(todos[todoIndex]);

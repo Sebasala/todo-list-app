@@ -18,12 +18,12 @@ export async function GET() {
  */
 export async function POST(request: Request) {
   try {
-    const { text }: { text: string } = await request.json();
-    if (text === undefined) {
+    const { title }: { title: string } = await request.json();
+    if (title === undefined) {
       return NextResponse.json({ error: "Text is required" }, { status: 400 });
     }
 
-    const sanitizedText = sanitizeText(text);
+    const sanitizedText = sanitizeText(title);
     if (!sanitizedText) {
       return NextResponse.json(
         { error: "Invalid text provided" },
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 
     const newTodo: Todo = {
       id: crypto.randomUUID(),
-      text: sanitizedText,
+      title: sanitizedText,
       completed: false,
       createdAt: new Date(),
     };

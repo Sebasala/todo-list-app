@@ -29,7 +29,7 @@ export const CreateTodo = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: sanitizedText }),
+        body: JSON.stringify({ title: sanitizedText }),
       });
 
       if (response.ok) {
