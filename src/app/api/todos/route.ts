@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { Todo } from "@/types";
+import { Todo } from "@/generated/prisma/client";
 import { sanitizeText } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 
@@ -9,12 +9,16 @@ import { prisma } from "@/lib/prisma";
  */
 export async function GET() {
   try {
-    const todos = await prisma.todo.findMany();
+    const todos = await prisma.todo.findMany({
+      orderBy: { createdAt: "desc" },
+    });
     return NextResponse.json(todos);
   } catch (error) {
     console.error({ error });
-  } finally {
-    await prisma.$disconnect();
+    return NextResponse.json(
+      { error: "Failed to fetch todos" },
+      { status: 500 }
+    );
   }
 }
 
@@ -45,12 +49,11 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(newTodo, { status: 201 });
-  } catch {
+  } catch (error) {
+    console.error({ error });
     return NextResponse.json(
       { error: "Invalid request body" },
       { status: 400 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

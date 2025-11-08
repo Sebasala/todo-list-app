@@ -1,4 +1,7 @@
 {
   "eslint.useFlatConfig": true,
-  "eslint.workingDirectories": ["./"]
+  "eslint.workingDirectories": [
+    "./"
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
