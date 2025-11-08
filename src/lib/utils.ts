@@ -1,5 +1,5 @@
 import validator from "validator";
-import { Todo } from "@/types";
+import { Todo } from "@/generated/prisma/client";
 
 /**
  * Sanitizes input text by validating type, trimming whitespace, escaping HTML characters,
@@ -43,3 +43,18 @@ export const pathNames = [
     path: "/dashboard",
   },
 ];
+
+/**
+ * Fetches all todo items from the API.
+ * @returns A promise that resolves to an array of Todo objects.
+ */
+export async function fetchTodos(): Promise<Todo[]> {
+  try {
+    const response = await fetch("/api/todos");
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching todos:", { error });
+    return [];
+  }
+}

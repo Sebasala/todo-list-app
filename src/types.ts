@@ -1,14 +1,4 @@
 /**
- * Represents a todo item in the application.
- */
-export interface Todo {
-  id: string;
-  title: string;
-  completed: boolean;
-  createdAt: Date;
-}
-
-/**
  * Parameters for identifying a single todo item by ID.
  */
 export interface SingleTodoParams {

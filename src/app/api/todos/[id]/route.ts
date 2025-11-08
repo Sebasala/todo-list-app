@@ -38,8 +38,6 @@ export async function PUT(request: NextRequest, { params }: SingleTodoContext) {
       return NextResponse.json({ error: "Todo not found" }, { status: 404 });
     }
     throw error; // Re-throw other errors
-  } finally {
-    prisma.$disconnect();
   }
 }
 
@@ -68,7 +66,5 @@ export async function DELETE(
       return NextResponse.json({ error: "Todo not found" }, { status: 404 });
     }
     throw error; // Re-throw other errors
-  } finally {
-    prisma.$disconnect();
   }
 }

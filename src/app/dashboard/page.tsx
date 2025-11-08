@@ -15,7 +15,5 @@ export default async function Dashboard() {
     );
   } catch (error) {
     console.error({ error });
-  } finally {
-    await prisma.$disconnect();
   }
 }
