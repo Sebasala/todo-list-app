@@ -2,7 +2,6 @@ import { useState } from "react";
 import { sanitizeText } from "@/lib/utils";
 import { Todo } from "@/generated/prisma/client";
 
-// TODO: Implement i18n for messages
 /**
  * Custom React hook for managing the creation of a new todo item.
  * This hook handles the state for the todo title, submission status, error messages,
@@ -17,13 +16,16 @@ import { Todo } from "@/generated/prisma/client";
  *   - handleSubmit: {function(Event): Promise<void>} Handler for form submission.
  *   - handleInput: {function(Event): void} Handler for input changes.
  */
-export const useCreateTodo = (addTodo: (todo: Todo) => void) => {
+export const useCreateTodo = (
+  isLoading: boolean,
+  addTodo: (todo: Todo) => void
+) => {
   const [title, setTitle] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [messageVisible, setMessageVisible] = useState(false);
   const sanitizedTitle = sanitizeText(title);
-  const maySubmit = !isSubmitting && sanitizedTitle;
+  const maySubmit = !isSubmitting && !isLoading && sanitizedTitle;
 
   /**
    * Handles the form submission for creating a new todo.

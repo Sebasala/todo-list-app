@@ -4,7 +4,7 @@ import { clsx } from "clsx";
 import { useCreateTodo } from "./useCreateTodo";
 import { CreateTodoProps } from "./types";
 
-export const CreateTodo = ({ addTodo }: CreateTodoProps) => {
+export const CreateTodo = ({ isLoading, addTodo }: CreateTodoProps) => {
   const {
     title,
     isSubmitting,
@@ -13,7 +13,7 @@ export const CreateTodo = ({ addTodo }: CreateTodoProps) => {
     maySubmit,
     handleSubmit,
     handleInput,
-  } = useCreateTodo(addTodo);
+  } = useCreateTodo(isLoading, addTodo);
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>

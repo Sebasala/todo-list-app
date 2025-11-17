@@ -8,8 +8,7 @@ export default function Home() {
   const { todos, isLoading, addTodo } = useTodos();
   return (
     <div className={styles.page}>
-      {/* TODO: Test what happens if a todo is added while loading todos. */}
-      <CreateTodo addTodo={addTodo} />{" "}
+      <CreateTodo isLoading={isLoading} addTodo={addTodo} />{" "}
       <TodoList todos={todos} isLoading={isLoading} />
     </div>
   );
