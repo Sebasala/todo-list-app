@@ -1,18 +1,18 @@
 .header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
   background-color: #f8f9fa;
+  background-color: var(--background);
   border-bottom: 1px solid #e9ecef;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: var(--background);
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
 }
 
 .title {
-  margin: 0;
-  font-size: 1.5rem;
   color: var(--foreground);
+  font-size: 1.5rem;
+  margin: 0;
 }
 
 .nav {
@@ -21,10 +21,10 @@
 }
 
 .link {
+  border-radius: 4px;
+  color: #004691;
   padding: 0.5rem 1rem;
   text-decoration: none;
-  color: #007bff;
-  border-radius: 4px;
   transition: background-color 0.2s ease;
 }
 

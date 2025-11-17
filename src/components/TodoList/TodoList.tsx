@@ -2,6 +2,7 @@
 import styles from "./TodoList.module.scss";
 import { Todo } from "@/generated/prisma/client";
 import { Spiner } from "@/components/Spiner";
+import { TodoItem } from "@/components/TodoItem/TodoItem";
 
 interface TodoListProps {
   todos: Todo[];
@@ -16,9 +17,7 @@ export function TodoList({ todos, isLoading }: TodoListProps) {
           {todos.length > 0 ? (
             <ul className={styles.todoList}>
               {todos.map((todo: Todo) => (
-                <li key={todo.id} className={styles.todoItem}>
-                  {todo.title}
-                </li>
+                <TodoItem key={todo.id} todo={todo} />
               ))}
             </ul>
           ) : (
@@ -31,7 +30,9 @@ export function TodoList({ todos, isLoading }: TodoListProps) {
           )}
         </>
       ) : (
-        <Spiner />
+        <div className={styles.spinerContainer}>
+          <Spiner />
+        </div>
       )}
     </>
   );
