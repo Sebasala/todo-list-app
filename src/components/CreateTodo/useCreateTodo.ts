@@ -2,6 +2,8 @@ import { useState } from "react";
 import { sanitizeText } from "@/lib/utils";
 import { Todo } from "@/generated/prisma/client";
 
+// TODO: Avoid magic strings by defining error codes in the API or in a content file and using them here.
+
 /**
  * Custom React hook for managing the creation of a new todo item.
  * This hook handles the state for the todo title, submission status, error messages,
@@ -10,8 +12,8 @@ import { Todo } from "@/generated/prisma/client";
  * @returns {Object} An object with the following properties:
  *   - title: {string} The current value of the todo title input.
  *   - isSubmitting: {boolean} Whether the form is currently being submitted.
- *   - message: {string} The current error or success message.
- *   - messageVisible: {boolean} Whether the message should be displayed.
+ *   - errorMessage: {string} The current error or success message.
+ *   - errorMessageVisible: {boolean} Whether the message should be displayed.
  *   - maySubmit: {boolean} Whether the form can be submitted (title is valid and not submitting).
  *   - handleSubmit: {function(Event): Promise<void>} Handler for form submission.
  *   - handleInput: {function(Event): void} Handler for input changes.
@@ -22,8 +24,8 @@ export const useCreateTodo = (
 ) => {
   const [title, setTitle] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState("");
-  const [messageVisible, setMessageVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessageVisible, setErrorMessageVisible] = useState(false);
   const sanitizedTitle = sanitizeText(title);
   const maySubmit = !isSubmitting && !isLoading && sanitizedTitle;
 
@@ -52,18 +54,18 @@ export const useCreateTodo = (
         setTitle("");
       } else {
         if (response.status === 400) {
-          setMessage("Validation failed: Please check your input");
+          setErrorMessage("Validation failed: Please check your input");
         } else if (response.status >= 500) {
-          setMessage("Server error: Please try again later");
+          setErrorMessage("Server error: Please try again later");
         } else {
-          setMessage("Error creating todo");
+          setErrorMessage("Error creating todo");
         }
-        setMessageVisible(true);
+        setErrorMessageVisible(true);
       }
     } catch (error) {
       console.error("Failed to create todo: ", { error });
-      setMessage("Network error: Please check your connection");
-      setMessageVisible(true);
+      setErrorMessage("Network error: Please check your connection");
+      setErrorMessageVisible(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -75,16 +77,16 @@ export const useCreateTodo = (
    * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event.
    */
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMessage("");
-    setMessageVisible(false);
+    setErrorMessage("");
+    setErrorMessageVisible(false);
     setTitle(e.target.value);
   };
 
   return {
     title,
     isSubmitting,
-    message,
-    messageVisible,
+    errorMessage,
+    errorMessageVisible,
     maySubmit,
     handleSubmit,
     handleInput,

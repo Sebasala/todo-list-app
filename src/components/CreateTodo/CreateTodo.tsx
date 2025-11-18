@@ -4,15 +4,23 @@ import { clsx } from "clsx";
 import { useCreateTodo } from "./useCreateTodo";
 import { CreateTodoProps } from "./types";
 
+// TODO: Move copy strings to a separate file for localization.
+/**
+ * CreateTodo component that provides a form for users to create new todo items.
+ * @param {CreateTodoProps} props - The component props.
+ * @param {boolean} props.isLoading - Indicates if the application is in a loading state.
+ * @param {(todo: import("@/generated/prisma/client").Todo) => void} props.addTodo - Function to add a new todo item to the list.
+ * @returns {JSX.Element} The rendered CreateTodo form component.
+ */
 export const CreateTodo = ({ isLoading, addTodo }: CreateTodoProps) => {
   const {
-    title,
-    isSubmitting,
-    message,
-    messageVisible,
-    maySubmit,
-    handleSubmit,
+    errorMessage,
+    errorMessageVisible,
     handleInput,
+    handleSubmit,
+    isSubmitting,
+    maySubmit,
+    title,
   } = useCreateTodo(isLoading, addTodo);
 
   return (
@@ -27,7 +35,7 @@ export const CreateTodo = ({ isLoading, addTodo }: CreateTodoProps) => {
           value={title}
           onChange={handleInput}
           className={clsx(styles.input, {
-            [styles.error]: messageVisible,
+            [styles.error]: errorMessageVisible,
           })}
           aria-describedby="todo-message"
         />
@@ -35,9 +43,9 @@ export const CreateTodo = ({ isLoading, addTodo }: CreateTodoProps) => {
           {isSubmitting ? "Creating..." : "Create"}
         </button>
       </div>
-      {messageVisible && (
+      {errorMessageVisible && (
         <p id="todo-message" className={styles.message}>
-          {message}
+          {errorMessage}
         </p>
       )}
     </form>

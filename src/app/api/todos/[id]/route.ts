@@ -10,7 +10,10 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
  * @param {SingleTodoContext} context - Context containing route parameters
  * @returns {Promise<NextResponse>} JSON response containing the updated todo or error
  */
-export async function PUT(request: NextRequest, { params }: SingleTodoContext) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: SingleTodoContext
+) {
   const { id } = await params;
 
   const { completed, title }: { completed?: boolean; title?: string } =
